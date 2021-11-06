@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text History</title>
+</head>
+
+<body>
+    <h1>History</h1>
+    <div id="textHistory"></div>
+    <p id="savingText"><b>Debouncing...</b></p>
+    <input type="text" name="text" id="text" />
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"
+        integrity="sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=" crossorigin="anonymous"></script>
+    <script>
+        const textHistoryElt = document.querySelector('#textHistory');
+        const savingTextElt = document.querySelector('#savingText');
+        const textElt = document.querySelector('#text');
+        let currentMessage = textElt.value;
+
+        function pushTextHistory(text) {
+            if (text !== currentMessage) {
+                const textP = document.createElement('p');
+                textP.textContent = text;
+                currentMessage = text;
+                textHistoryElt.appendChild(textP);
+            }
+            savingTextElt.style.visibility = 'hidden';
+        }
+
+        const debouncedPTH = _.debounce(() => pushTextHistory(textElt.value), 1000, { maxWait: 2000 });
+
+        textElt.addEventListener('input', () => {
+            savingTextElt.style.visibility = 'visible';
+            debouncedPTH();
+        });
+    </script>
+</body>
+
+</html>
